@@ -12,14 +12,23 @@
 	    <link rel="shortcut icon" href=@routes.Assets.at("img/favicon.png") type="image/png">
 	    	    
 	    <!-- Bootstrap Core CSS -->
-		<link rel="stylesheet" href=@routes.Assets.at("stylesheets/bootstrap.min.css")>
+		<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/bootstrap.min.css")>
 		
+		 <!-- Bootstrap Multiselect CSS -->
+		<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/bootstrap-multiselect.css")>
+			
 		<!-- jQuery -->
 		<script src=@routes.Assets.at("javascripts/jquery.js")></script>
 		
 		<!-- Bootstrap Core JavaScript -->
-		<script type="text/javascript" src=@routes.Assets.at("javascripts/bootstrap.min.js") async></script>
-				
+		<script type="text/javascript" src=@routes.Assets.at("javascripts/bootstrap.min.js")></script>
+		
+		<!-- Bootstrap Miltiselect JavaScript -->
+		<script type="text/javascript" src=@routes.Assets.at("javascripts/bootstrap-multiselect.js")></script>
+		
+	    <!-- Bootstrap Miltiselect Action -->
+	    <script type="text/javascript" src=@routes.Assets.at("javascripts/bootstrap-multiselect.action.js")></script>
+					
 	    <!-- Custom CSS -->
     	<link href=@routes.Assets.at("stylesheets/business-casual.css") rel="stylesheet">
     	    	
@@ -91,16 +100,16 @@
             				<div class="container">
             				<div class="row">
                     			<div class="col-md-12">
-                        			<form class="form-horizontal" role="form">
+                        			<form class="form-horizontal" role="form" method="post" action=@routes.Application.createAd()>
                             		<fieldset>
                                 	<legend>Informação sobre o Anúncio</legend>
                                 		<div class="control-group">
                                     		<div class="form-group">
                                         		<div class="col-sm-2">
-                                            		<label class="control-label">Títilo</label>
+                                            		<label class="control-label">Título</label>
                                         		</div>
                                         		<div class="col-sm-10">
-                                            		<input type="text" class="form-control" required>
+                                            		<input type="text" name="titulo" class="form-control" required>
                                         		</div>
                                     		</div>
                                     	</div>
@@ -109,7 +118,7 @@
                                             	<label class="control-label">Descrição</label>
                                         	</div>
                                         	<div class="col-sm-10">
-                                            	<textarea rows="4" class="form-control" required></textarea>
+                                            	<textarea name="desc" rows="4" class="form-control" required></textarea>
                                         	</div>
                                     	</div>
                         			</fieldset>
@@ -118,10 +127,10 @@
                                 		<div class="control-group">
                                     		<div class="form-group">
                                         		<div class="col-sm-2">
-                                            		<label class="control-label" for="">Email</label>
+                                            		<label class="control-label">Email</label>
                                         		</div>
                                         		<div class="col-sm-10">
-                                            		<input type="email" class="form-control">
+                                            		<input type="email" name="email" class="form-control">
                                         		</div>
                                     		</div>
                                     		<div class="form-group">
@@ -129,7 +138,7 @@
                                             		<label class="control-label">Cidade</label>
                                         		</div>
                                         			<div class="col-sm-10">
-                                            			<input type="text" class="form-control" riquered>
+                                            			<input type="text" name="city" class="form-control" required>
                                        		 	</div>
                                     		</div>
                                     		<div class="form-group">
@@ -137,7 +146,7 @@
                                             		<label class="control-label">Bairro</label>
                                         		</div>
                                         		<div class="col-sm-10">
-                                            		<input type="text" class="form-control" riquered>
+                                            		<input type="text" name="bairro" class="form-control" required>
                                         		</div>
                                     		</div>
                                     		<div class="form-group">
@@ -145,19 +154,7 @@
                                             		<label class="control-label">Perfil Facebook</label>
                                         		</div>
                                         		<div class="col-sm-10">
-                                            		<input type="text" class="form-control">
-                                        		</div>
-                                    		</div>
-                                    		<div class="form-group">
-                                        		<div class="col-sm-2">
-                                            		<label class="control-label">Interessado em</label>
-                                        		</div>
-                                        		<div class="col-sm-10">
-                                            		<select class="form-control" riquered>
-                                            			<option></option>
-                                                		<option>Formar uma Banda</option>
-                                                		<option>Tocar Ocasionalmente</option>
-                                            		</select>
+                                            		<input type="text" name="perfil" class="form-control">
                                         		</div>
                                     		</div>
                                     		<div class="form-group">
@@ -165,12 +162,11 @@
                                             		<label class="control-label">Instrumentos que Toco</label>
                                         		</div>
                                         		<div class="col-sm-10">
-                                            		<select class="form-control" riquered>
-                                                		<option></option>
-                                                		@for(instrument <- instruments) {
-                                                			<option>@instrument.getNome()</option>
+                                            		<select class="form-control multiselect" id="myInst" name="myInst[]" multiple="multiple">
+                            		              		@for(instrument <- instruments) {
+                                                			<option value="inst_@instrument.getId()">@instrument.getNome()</option>
                                                 		}
-                                            		</select>
+                                                	</select>
                                         		</div>
                                     		</div>
                                     		<div class="form-group">
@@ -178,12 +174,11 @@
                                             		<label class="control-label">Estilo que Gosto</label>
                                         		</div>
                                         		<div class="col-sm-10">
-                                            		<select class="form-control">
-                                                		<option></option>
-                                                		@for(style <- styles) {
-                                                			<option>@style.getNome()</option>
+                                             		<select class="form-control multiselect" id="goodSty" name="goodSty[]" multiple="multiple">
+                            		              		@for(style <- styles) {
+                                                			<option value="sty_@style.getId()">@style.getNome()</option>
                                                 		}
-                                            		</select>
+                                                	</select>
                                         		</div>
                                     		</div>
                                     		<div class="form-group">
@@ -191,12 +186,26 @@
                                             		<label class="control-label">Estilos que não Gosto</label>
                                         		</div>
                                     			<div class="col-sm-10">
-                                            		<select class="form-control">
-                                                		<option></option>
-                                                		@for(style <- styles) {
-                                                			<option>@style.getNome()</option>
+                                             		<select class="form-control multiselect" id="badSty" name="badSty[]" multiple="multiple">
+                            		              		@for(style <- styles) {
+                                                			<option value="sty_@style.getId()">@style.getNome()</option>
                                                 		}
                                             		</select>
+                                        		</div>
+                                    		</div>
+                                    		<div class="form-group">
+                                        		<div class="col-sm-2">
+                                            		<label class="control-label">Interessado em</label>
+                                        		</div>
+                                        		<div class="col-sm-10">
+                                            		<div class="radio">
+                                            			<label class="radio-inline">
+                                      						<input type="radio" name="interesse" value="1">Formar uma Banda</input>
+                                  						</label>
+                                  						<label class="radio-inline">
+                                      						<input type="radio" name="interesse" value="2">Tocar Ocasionalmente</input>
+                                  						</label>
+                                            		</div>
                                         		</div>
                                     		</div>
                                 		</div>
@@ -216,7 +225,7 @@
 	        </div>
 	    </div>
 	    <!-- /.container -->
-	
+	    
 	    <footer>
 	        <div class="container">
 	            <div class="row">

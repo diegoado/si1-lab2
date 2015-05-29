@@ -14,7 +14,7 @@ public enum StyleType {
 	POP_ROCK("Pop Rock"), POS_PUNK("Pós Punk"), POST_ROCK("Post Rock"), POWER_POP("Power Pop"),
 	PROGRESSIVO("Progressivo"), PSICODELIA("Psicodelia"), PUNK_ROCK("Punk Rock"), R_AND_B("R&B"),
 	RAP("Rap"), REGGAE("Reggae"), REGIONAL("Regional"), ROCK("Rock"), 
-	ROCK_ALTERNATIVO("Rock Alternativo"), ROMATIVO("Romântico"), SAMBA("SAMBA"), SERTANEJO("Sertanejo"),
+	ROCK_ALTERNATIVO("Rock Alternativo"), ROMATIVO("Romântico"), SAMBA("Samba"), SERTANEJO("Sertanejo"),
 	SKA("Ska"), SOFT_ROCK("Soft Rock"), SOUL("Soul"), SURF_MUSIC("Surf Music"), TECNOPOP("Tecnopop"),
 	TRACE("Trace"), TRIP_HOP("Trip Hop"), VELHA_GUARDA("Velha Guarda"), WORLD_MUSIC("World Music");
 	
