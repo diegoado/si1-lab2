@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
+
+import models.exception.NewAdException;
 
 @Entity(name = "poster")
 public class Poster implements Serializable {
@@ -13,20 +14,22 @@ public class Poster implements Serializable {
 	@GeneratedValue
 	private long id;
 	
+	@Column(name = "code", unique = true, nullable = false)
+	private long code;
+	
 	@Column(name = "title", nullable = false)
 	private String title;
 	
-	@Size(min = 15)
-	@Column(name = "subject", nullable = false)
-	private String subject;
-	
-	@Column(name = "create_on")
-	@Temporal(value = TemporalType.DATE)
-	private Calendar createdOn;
+	@Column(name = "description", nullable = false)
+	private String description;
 	
 	@Column(name = "search_for", nullable = false)
 	private String searchFor;
 	
+	@Column(name = "create_on")
+	@Temporal(value = TemporalType.DATE)
+	private Calendar createdOn;
+		
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
@@ -34,9 +37,22 @@ public class Poster implements Serializable {
 	@Transient
 	private static final long serialVersionUID = 1L;
 	
-	public Poster() {
-		createdOn = Calendar.getInstance();
+	protected Poster() {
 	}
+	
+	public Poster(String title, String description, String searchFor, User user) throws NewAdException {
+		checkRequiredInfo(title, description, searchFor);
+		
+		this.title = title;
+		this.description = description;
+		createdOn = Calendar.getInstance();
+		code = title.hashCode() + user.hashCode();
+		this.searchFor = searchFor;
+		this.user = user;
+		
+	}
+	
+	// Getters and Setters
 
 	public long getId() {
 		return id;
@@ -44,6 +60,14 @@ public class Poster implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getCode() {
+		return code;
+	}
+
+	public void setCode(long code) {
+		this.code = code;
 	}
 
 	public String getTitle() {
@@ -54,12 +78,12 @@ public class Poster implements Serializable {
 		this.title = title;
 	}
 
-	public String getSubject() {
-		return subject;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Calendar getCreatedOn() {
@@ -77,12 +101,27 @@ public class Poster implements Serializable {
 	public void setSearchFor(String searchFor) {
 		this.searchFor = searchFor;
 	}
-
+	
 	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	private void checkRequiredInfo(String title, String description, 
+			String searchFor) throws NewAdException {
+		
+		if(title == null || description == null || searchFor == null ||
+				title.isEmpty() || description.isEmpty() || searchFor.isEmpty()) {
+			throw new NewAdException("os campos de titulo, descrição e a "
+						+ "motivação do anúncio são obrigatórios");
+		}
+		
+		if(description.length() < 14) {
+			throw new NewAdException("sua descrição dever ter no mínimo 15 caracteres, "
+					+ "por favor verifique!");
+		}
 	}
 }

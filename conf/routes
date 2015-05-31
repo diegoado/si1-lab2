@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index()
 GET 	/sobre						controllers.Application.sobre()
 GET  	/publique					controllers.Application.publique()
+GET	    /anuncios					controllers.Application.anuncios()
 
 POST    /publique					controllers.Application.createAd()
 

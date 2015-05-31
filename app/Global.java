@@ -2,12 +2,14 @@
 
 import java.util.List;
 
+import models.repository.BadStyleRepository;
+import models.repository.GoodStyleRepository;
 import models.repository.InstrumentRepository;
 import models.constant.InstrumentType;
 import models.constant.StyleType;
+import models.entity.BadStyle;
+import models.entity.GoodStyle;
 import models.entity.Instrument;
-import models.entity.Style;
-import models.repository.StyleRepository;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
@@ -15,9 +17,11 @@ import play.db.jpa.JPA;
 
 public class Global extends GlobalSettings {
 	
-	private List<Style> styles;
+	private List<BadStyle> badStyles;
+	private List<GoodStyle> goodStyles;
 	private List<Instrument> instruments;
-	private static StyleRepository styleRepository = StyleRepository.getInstance();
+	private static BadStyleRepository badStyleRepository = BadStyleRepository.getInstance();
+	private static GoodStyleRepository goodStyleRepository = GoodStyleRepository.getInstance();
 	private static InstrumentRepository instrumentRepository = InstrumentRepository.getInstance();
 	
 	@Override
@@ -29,12 +33,22 @@ public class Global extends GlobalSettings {
 			@Override
 			public void invoke() throws Throwable {
 				try {
-					styles = styleRepository.findAll();
-					if(styles.size() == 0) {
+					goodStyles = goodStyleRepository.findAll();
+					if(goodStyles.size() == 0) {
 						for(StyleType style : StyleType.values()) {
-							styleRepository.persist(new Style(style.getDescription()));
+							goodStyleRepository.persist(new GoodStyle(style.getDescription()));
+							
 						}
-						styleRepository.flush();
+						goodStyleRepository.flush();
+					}
+					
+					badStyles = badStyleRepository.findAll();
+					if(badStyles.size() == 0) {
+						for(StyleType style : StyleType.values()) {
+							badStyleRepository.persist(new BadStyle(style.getDescription()));
+							
+						}
+						badStyleRepository.flush();
 					}
 					
 					instruments = instrumentRepository.findAll();
@@ -60,9 +74,14 @@ public class Global extends GlobalSettings {
 			public void invoke() throws Throwable {
 				Logger.info("Application shutdown");
 				try {
-					styles = styleRepository.findAll();
-					for(Style style : styles) {
-						styleRepository.removeById(style.getId());
+					goodStyles = goodStyleRepository.findAll();
+					for(GoodStyle style : goodStyles) {
+						goodStyleRepository.removeById(style.getId());
+					}
+					
+					badStyles = badStyleRepository.findAll();
+					for(BadStyle style : badStyles) {
+						badStyleRepository.removeById(style.getId());
 					}
 					
 					instruments = instrumentRepository.findAll();

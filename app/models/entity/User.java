@@ -3,9 +3,18 @@ package models.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 
+import models.exception.NewAdException;
 
 @Entity(name = "user")
 public class User implements Serializable {
@@ -14,36 +23,51 @@ public class User implements Serializable {
 	@GeneratedValue
 	private long id;
 	
-	@Column(name = "name", nullable = false)
-	private String name;
+	@Column(name = "email")
+	private String email;
 	
-	@Column(name = "nick_name", nullable = false, unique = true)
-	private String nickName;
+	@Column(name = "profile")
+	private String profile;
 	
-	@Column(name = "passworld", nullable = false)
-	private String passworld;
-		
-	@OneToOne(mappedBy = "user")
-	private Address address;
+	@Column(name = "city", nullable = false)
+	private String city;
 	
-	@OneToOne(mappedBy = "user")
-	private Contact contact;
-	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@Column(name = "neighborhood", nullable = false)
+	private String neighborhood;
+					
+	@ManyToMany (cascade = CascadeType.ALL)
 	private List<Instrument> instruments;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Style> goodStyles;
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<GoodStyle> goodStyles;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Style> badStyles;
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<BadStyle> badStyles;
 	
 	@Transient
 	private static final long serialVersionUID = 1L;
 	
-	public User() {
-		instruments = new ArrayList<Instrument>();
+	protected User() {
 	}
+	
+	public User(String email, String profile, String city, String neighborhood, List<Instrument> instruments, 
+			List<BadStyle> bad, List<GoodStyle> good) throws NewAdException {
+		
+		checkRequiredInfo(city, neighborhood, instruments);
+		checkContactInfo(email, profile);
+		checkStyleInfo(good, bad);
+				
+		this.city = city;
+		this.email = email;
+		this.profile = profile;
+		this.neighborhood = neighborhood;
+		
+		this.badStyles = bad;
+		this.goodStyles = good;
+		this.instruments = instruments;		
+	}
+	
+	// Getters and Setters
 	
 	public long getId() {
 		return id;
@@ -52,45 +76,37 @@ public class User implements Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
-
-	public String getName() {
-		return name;
+	
+	public String getEmail() {
+		return email;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getNickName() {
-		return nickName;
+	public String getProfile() {
+		return profile;
 	}
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	public void setProfile(String profile) {
+		this.profile = profile;
 	}
 
-	public String getPassworld() {
-		return passworld;
+	public String getCity() {
+		return city;
 	}
 
-	public void setPassworld(String passworld) {
-		this.passworld = passworld;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
-	public Address getAddress() {
-		return address;
+	public String getNeighborhood() {
+		return neighborhood;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
-	public Contact getContact() {
-		return contact;
-	}
-
-	public void setContact(Contact contact) {
-		this.contact = contact;
+	public void setNeighborhood(String neighborhood) {
+		this.neighborhood = neighborhood;
 	}
 
 	public List<Instrument> getInstruments() {
@@ -101,19 +117,112 @@ public class User implements Serializable {
 		this.instruments = instruments;
 	}
 
-	public List<Style> getGoodStyles() {
+	public List<GoodStyle> getGoodStyles() {
 		return goodStyles;
 	}
 
-	public void setGoodStyles(List<Style> goodStyles) {
+	public void setGoodStyles(List<GoodStyle> goodStyles) {
 		this.goodStyles = goodStyles;
 	}
 
-	public List<Style> getBadStyles() {
+	public List<BadStyle> getBadStyles() {
 		return badStyles;
 	}
 
-	public void setBadStyles(List<Style> badStyles) {
+	public void setBadStyles(List<BadStyle> badStyles) {
 		this.badStyles = badStyles;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result
+				+ ((instruments == null) ? 0 : instruments.hashCode());
+		result = prime * result
+				+ ((neighborhood == null) ? 0 : neighborhood.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		User other = (User) obj;
+		if (city == null) {
+			if (other.city != null) {
+				return false;
+			}
+		} else if (!city.equals(other.city)) {
+			return false;
+		}
+		if (instruments == null) {
+			if (other.instruments != null) {
+				return false;
+			}
+		} else if (!instruments.equals(other.instruments)) {
+			return false;
+		}
+		if (neighborhood == null) {
+			if (other.neighborhood != null) {
+				return false;
+			}
+		} else if (!neighborhood.equals(other.neighborhood)) {
+			return false;
+		}
+		return true;
+	}
+	
+	private void checkRequiredInfo(String city, String neighborhood, 
+			List<Instrument> instruments) throws NewAdException {
+		
+		if(city == null || neighborhood == null || city.isEmpty() || 
+				neighborhood.isEmpty() || instruments.isEmpty()) {
+			throw new NewAdException("os campos de cidade, bairro e os "
+						+ "instrumentos que você toca são obrigatórios");
+		}
+	}
+	
+	private void checkContactInfo(String email, String profile) throws NewAdException {
+		if((email == null && profile == null) || (email.isEmpty() && profile.isEmpty())) {
+			throw new NewAdException("é necessário pelo menos uma forma de contato: "
+						+ "email ou perfil no facebook");
+		}
+		
+		Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		
+		Matcher matcher = pattern.matcher(email);
+		if(!matcher.matches()) {
+			throw new NewAdException("o email formecido é inválido, por favor verifique!");
+		}
+	}
+	
+	private void checkStyleInfo(List<GoodStyle> good, List<BadStyle> bad) throws NewAdException {
+		List<String> badStyles = new ArrayList<String>();
+		List<String> goodStyles = new ArrayList<String>();
+		
+		for(BadStyle style : bad) {
+			badStyles.add(style.getNome());
+		}
+		
+		for(GoodStyle style : good) {
+			goodStyles.add(style.getNome());
+		}
+		
+		for(String styleName : goodStyles) {
+			if(badStyles.contains(styleName)) {
+				throw new NewAdException("existe um ou mais estilos nas duas listas, "
+						+ "por favor verifique!");
+			}
+		}
 	}
 }

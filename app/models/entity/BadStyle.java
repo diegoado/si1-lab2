@@ -2,11 +2,14 @@ package models.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
-
-@Entity(name = "instrument")
-public class Instrument implements Serializable {
+@Entity(name = "bad_style")
+public class BadStyle implements Serializable {
 	
 	@Id
 	@GeneratedValue
@@ -14,14 +17,14 @@ public class Instrument implements Serializable {
 	
 	@Column(name = "name", nullable = false)
 	private String nome;
-
+	
 	@Transient
 	private static final long serialVersionUID = 1L;
 	
-	protected Instrument() {
-	} 
-
-	public Instrument(String nome) {
+	protected BadStyle() {
+	}
+	
+	public BadStyle(String nome) {
 		this.nome = nome;
 	}
 
@@ -40,7 +43,7 @@ public class Instrument implements Serializable {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
+	
 	@Override
 	public String toString() {
 		return nome;

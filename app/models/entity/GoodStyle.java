@@ -2,10 +2,14 @@ package models.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
-@Entity(name = "styles")
-public class Style implements Serializable {
+@Entity(name = "good_style")
+public class GoodStyle implements Serializable {
 	
 	@Id
 	@GeneratedValue
@@ -13,14 +17,14 @@ public class Style implements Serializable {
 	
 	@Column(name = "name", nullable = false)
 	private String nome;
-
+	
 	@Transient
 	private static final long serialVersionUID = 1L;
 	
-	public Style() {
+	protected GoodStyle() {
 	}
-
-	public Style(String nome) {
+	
+	public GoodStyle(String nome) {
 		this.nome = nome;
 	}
 
@@ -38,5 +42,10 @@ public class Style implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	
+	@Override
+	public String toString() {
+		return nome;
 	}
 }

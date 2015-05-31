@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html>
-   <head>
-	    <meta charset="utf-8">
+	<head>
+		<meta charset="utf-8">
 	    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	   	<meta name="description" content="Find Your Band"/>
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -16,7 +16,7 @@
 		<script src=@routes.Assets.at("javascripts/jquery.js")></script>
 		
 		<!-- Bootstrap Core JavaScript -->
-		<script type="text/javascript" src=@routes.Assets.at("javascripts/bootstrap.min.js") async></script>
+		<script type="text/javascript" src=@routes.Assets.at("javascripts/bootstrap.min.js")></script>
 				
 	    <!-- Custom CSS -->
     	<link href=@routes.Assets.at("stylesheets/business-casual.css") rel="stylesheet">
@@ -31,10 +31,11 @@
 	        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 	        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 	    <![endif]-->
-		<title>FYB - Sobre</title>
+		<title>FYB - Anúncios</title>
     </head>
 	<body>
-	    <div class="brand">Find You Band</div>
+	
+	    <div class="brand">Find Your Band</div>
 	    <div class="address-bar">Anúncios | Bandas | Musicos</div>
 	
 	    <!-- Navigation -->
@@ -49,22 +50,22 @@
 	                    <span class="icon-bar"></span>
 	                </button>
 	                <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-	                <a class="navbar-brand" href=@routes.Application.index()>Business Casual</a>
+	                <a class="navbar-brand" href=href=@routes.Application.index()>Business Casual</a>
 	            </div>
 	            <!-- Collect the nav links, forms, and other content for toggling -->
 	            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	                <ul class="nav navbar-nav">
-	                    <li>
+	                     <li>
 	                        <a href=@routes.Application.index()>Home</a>
 	                    </li>
 	                    <li>
-	                        <a href=@routes.Application.anuncios()>Anúncios</a>
+	                        <a href=@routes.Application.anuncios()>anúncios</a>
 	                    </li>
 	                    <li>
-	                        <a href=@routes.Application.publique()>Publique seu anúncio</a>
+	                    	<a href=@routes.Application.publique()>publique seu anúncio</a>
 	                    </li>
 	                    <li>
-	                        <a href=@routes.Application.sobre()>Sobre</a>
+	                        <a href=@routes.Application.sobre()>sobre</a>
 	                    </li>
 	                </ul>
 	            </div>
@@ -74,28 +75,33 @@
 	    </nav>
 	
 	    <div class="container">
+	
 	        <div class="row">
 	            <div class="box">
 	                <div class="col-lg-12">
 	                    <hr>
-	                    <h2 class="intro-text text-center">Sobre
-	                        <strong>Find Your Band</strong>
-	                    </h2>
+	                    <h2 class="intro-text text-center"><strong>Anúncios</strong> </h2>
 	                    <hr>
-	                    <img class="img-responsive img-border img-left" src=@routes.Assets.at("img/gt.jpg") alt="" style="width:304px;height:228px">
-	                    <hr class="visible-xs">
-	                    <p>Este sistema foi desenvolvido para o laboratório 2 da disciplina de Sistemas de Informação 1.</p>
-	                    <p>O Find Your Band é um serviço que ajude interessados a encontrar parceiros para formar bandas ou tocar juntos em ocasiões esporádicas.Music's Brothers utiliza anúncios para promover encontro de musicos, formações de novas bandas, etc.
-	                    </p>
-	                    <br><br><br><br><br>
-	                    <h2 class="intro-text text-center">
-	                        <strong>Funciona da seguinte maneira</strong>
-	                    </h2>
-	                    <p> Interessado em encontrar outras pessoas para formar uma banda? Crie seu anúncio para que assim possa ser contactado mais facilmente.</p>
-	                    <p> Se ja tem sua banda, visite o sistema e navege pelos anúncios.</p>
-	                    <p> Se interessou em algum anúncio? Deixe uma pergunta ao anunciante, para que assim possa tirar dúvidas sobre o anúncio.</p>
-	                    <p> Já encontrou parceiros musicais? Visite seu anúncio criado e o marque como finalizado, para que assim pare de receber contatos de pessoas procurando parceiros.</p>
 	                </div>
+	                <div class="col-sm-4 text-center">
+	                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
+	                    <h3>John Smith
+	                        <small>Job Title</small>
+	                    </h3>
+	                </div>
+	                <div class="col-sm-4 text-center">
+	                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
+	                    <h3>John Smith
+	                        <small>Job Title</small>
+	                    </h3>
+	                </div>
+	                <div class="col-sm-4 text-center">
+	                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
+	                    <h3>John Smith
+	                        <small>Job Title</small>
+	                    </h3>
+	                </div>
+	                <div class="clearfix"></div>
 	            </div>
 	        </div>
 	

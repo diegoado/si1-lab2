@@ -48,7 +48,7 @@ public abstract class GenericRepository<T> {
 	}
 
 	/**
-	 * Procura uma certa {@code clazz} pelo seu {@code id}.
+	 * Procura uma certa {@code class} pelo seu {@code id}.
 	 */
 	public T findByEntityId(Long id) {
 		return getEm().find(entity, id);
@@ -101,7 +101,7 @@ public abstract class GenericRepository<T> {
 	}
 
 	/**
-	 * Retorna quantas entidades da {@code clazz} estão no banco de dados
+	 * Retorna quantas entidades da {@code class} estão no banco de dados
 	 */
 	public Long countAll() {
 		// Total de entidades
@@ -113,7 +113,7 @@ public abstract class GenericRepository<T> {
 	}
 
 	/**
-	 * Retorna todos as entidades da {@code clazz} paginado pelo
+	 * Retorna todos as entidades da {@code class} paginado pelo
 	 * {@code pageNumber} com o tamanho da {@code pageSize}
 	 */
 	public List<T> findAll(int pageNumber, int pageSize) {

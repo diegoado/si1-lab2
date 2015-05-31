@@ -1,4 +1,4 @@
-@(styles: List[models.entity.Style], instruments: List[models.entity.Instrument])
+@(badStyles: List[models.entity.BadStyle], goodStyles: List[models.entity.GoodStyle], instruments: List[models.entity.Instrument])
 
 <!DOCTYPE html>
 <html>
@@ -70,7 +70,7 @@
 	                        <a href=@routes.Application.index()>Home</a>
 	                    </li>
 	                    <li>
-	                        <a href="anuncios.html">Anúncios</a>
+	                        <a href=@routes.Application.anuncios()>Anúncios</a>
 	                    </li>
                         <li>
 	                        <a href=@routes.Application.publique()>Publique seu anúncio</a>
@@ -100,6 +100,12 @@
             				<div class="container">
             				<div class="row">
                     			<div class="col-md-12">
+                    				@if(flash.get("erro") != null) {
+                    					<div class="alert alert-danger alert-dismissible" role="alert">
+  											<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  											<b>Erro!</b> @flash.get("erro")
+										</div>
+									}
                         			<form class="form-horizontal" role="form" method="post" action=@routes.Application.createAd()>
                             		<fieldset>
                                 	<legend>Informação sobre o Anúncio</legend>
@@ -118,7 +124,7 @@
                                             	<label class="control-label">Descrição</label>
                                         	</div>
                                         	<div class="col-sm-10">
-                                            	<textarea name="desc" rows="4" class="form-control" required></textarea>
+                                            	<textarea name="descricao" rows="4" class="form-control" required></textarea>
                                         	</div>
                                     	</div>
                         			</fieldset>
@@ -162,9 +168,9 @@
                                             		<label class="control-label">Instrumentos que Toco</label>
                                         		</div>
                                         		<div class="col-sm-10">
-                                            		<select class="form-control multiselect" id="myInst" name="myInst[]" multiple="multiple">
+                                            		<select class="form-control multiselect" id="myInst" name="myInst[]" multiple="multiple" required>
                             		              		@for(instrument <- instruments) {
-                                                			<option value="inst_@instrument.getId()">@instrument.getNome()</option>
+                                                			<option value=@instrument.getId()>@instrument.getNome()</option>
                                                 		}
                                                 	</select>
                                         		</div>
@@ -175,8 +181,8 @@
                                         		</div>
                                         		<div class="col-sm-10">
                                              		<select class="form-control multiselect" id="goodSty" name="goodSty[]" multiple="multiple">
-                            		              		@for(style <- styles) {
-                                                			<option value="sty_@style.getId()">@style.getNome()</option>
+                            		              		@for(style <- goodStyles) {
+                                                			<option value=@style.getId()>@style.getNome()</option>
                                                 		}
                                                 	</select>
                                         		</div>
@@ -187,8 +193,8 @@
                                         		</div>
                                     			<div class="col-sm-10">
                                              		<select class="form-control multiselect" id="badSty" name="badSty[]" multiple="multiple">
-                            		              		@for(style <- styles) {
-                                                			<option value="sty_@style.getId()">@style.getNome()</option>
+                            		              		@for(style <- badStyles) {
+                                                			<option value=@style.getId()>@style.getNome()</option>
                                                 		}
                                             		</select>
                                         		</div>
@@ -200,10 +206,10 @@
                                         		<div class="col-sm-10">
                                             		<div class="radio">
                                             			<label class="radio-inline">
-                                      						<input type="radio" name="interesse" value="1">Formar uma Banda</input>
+                                      						<input type="radio" name="interesse" value="Formar uma Banda">Formar uma Banda</input>
                                   						</label>
                                   						<label class="radio-inline">
-                                      						<input type="radio" name="interesse" value="2">Tocar Ocasionalmente</input>
+                                      						<input type="radio" name="interesse" value="Tocar Ocasionalmente">Tocar Ocasionalmente</input>
                                   						</label>
                                             		</div>
                                         		</div>
