@@ -5,7 +5,8 @@ $(document).ready(function() {
 		checkboxName: 'myInst[]',
 		filterPlaceholder: 'Pesquise um instrumento',
 		selectAllText: 'Selecionar Todos!',
-		nonSelectedText: 'Selecione uma opição',
+		nonSelectedText: 'Selecione uma opção',
+		nSelectedText: ' - Instrumentos selecionados!',
 		allSelectedText: 'Todos Selecionados',
 		buttonWidth: '300px',
 		maxHeight: 200
@@ -17,7 +18,8 @@ $(document).ready(function() {
 		checkboxName: 'goodSty[]',
 		filterPlaceholder: 'Pesquise um estilo',
 		selectAllText: 'Selecionar Todos!',
-		nonSelectedText: 'Selecione uma opição',
+		nonSelectedText: 'Selecione uma opção',
+		nSelectedText: ' - Estilos selecionados!',
 		allSelectedText: 'Todos Selecionados',
 		buttonWidth: '300px',
 		maxHeight: 200
@@ -30,7 +32,8 @@ $(document).ready(function() {
 		checkboxName: 'badSty[]',
 		filterPlaceholder: 'Pesquise um estilo',
 		selectAllText: 'Selecionar Todos!',
-		nonSelectedText: 'Selecione uma opição',
+		nonSelectedText: 'Selecione uma opção',
+		nSelectedText: ' - Estilos selecionados!',
 		allSelectedText: 'Todos Selecionados',
 		buttonWidth: '300px',
 		maxHeight: 200

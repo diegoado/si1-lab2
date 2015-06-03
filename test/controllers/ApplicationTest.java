@@ -1,33 +1,83 @@
 package controllers;
 
-import org.junit.*;
-
-import play.twirl.api.Content;
-
+import static org.fest.assertions.Assertions.assertThat;
+import static play.mvc.Http.Status.OK;
+import static play.mvc.Http.Status.SEE_OTHER;
 import static play.test.Helpers.*;
-import static org.fest.assertions.Assertions.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import play.GlobalSettings;
+import play.db.jpa.JPA;
+import play.db.jpa.JPAPlugin;
+import play.mvc.Result;
+import play.test.FakeApplication;
+import play.test.FakeRequest;
+import play.test.Helpers;
+import scala.Option;
 
 
-/**
-*
-* Simple (JUnit) tests that can call all parts of a play app.
-* If you are interested in mocking a whole application, see the wiki for more details.
-*
-*/
 public class ApplicationTest {
+	
+	private EntityManager entityManager;
 
-    @Test
-    public void simpleCheck() {
-        int a = 1 + 1;
-        assertThat(a).isEqualTo(2);
-    }
+	@Before
+	public void setUp() throws Exception {
+    	FakeApplication app = Helpers.fakeApplication(new GlobalSettings());
+    	Helpers.start(app);
+        Option<JPAPlugin> jpaPlugin = app.getWrappedApplication().plugin(JPAPlugin.class);
+        entityManager = jpaPlugin.get().em("default");
+        JPA.bindForCurrentThread(entityManager);
+        entityManager.getTransaction().begin();
+	}
+	
+	@Test
+	public void mustRenderIndex() {
+		Result result = Application.index();
+		assertThat(status(result)).isEqualTo(OK);
+	}
+	
+	@Test
+	public void mustRenderPublique() {
+		Result result = Application.publique();
+		assertThat(status(result)).isEqualTo(OK);
+	}
+	
+	@Test
+	public void mustCreateAd() {
+		Map<String, String> requestMap = new HashMap<>();
+		requestMap.put("titulo", "Anúnicio Teste");
+		requestMap.put("descricao", "Teste para um POST de um anúncio");
+		requestMap.put("email", "diegoado@gmail.com");
+		requestMap.put("city", "Campina Grande");
+		requestMap.put("bairro", "José Pinheiro");
+		requestMap.put("myInst[0]", "1");
+		requestMap.put("myInst[1]", "2");
+		
+		FakeRequest fakeRequest = new FakeRequest().withFormUrlEncodedBody(requestMap);
+		Result resultPost = callAction(controllers.routes.ref.Application.createAd(), fakeRequest);
+		assertThat(status(resultPost)).isEqualTo(SEE_OTHER);
+		
+		
+	}
+	
+	@Test
+	public void mustRenderAbout() {
+		Result result = Application.sobre();
+		assertThat(status(result)).isEqualTo(OK);
+	}
 
-    @Test
-    public void renderTemplate() {
-        Content html = views.html.index.render("Your new application is ready.");
-        assertThat(contentType(html)).isEqualTo("text/html");
-        assertThat(contentAsString(html)).contains("Your new application is ready.");
-    }
-
-
+	@After
+	public void tearDown() throws Exception {
+        entityManager.getTransaction().commit();
+        JPA.bindForCurrentThread(null);
+        entityManager.close();
+	}
 }

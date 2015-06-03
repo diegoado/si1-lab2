@@ -8,8 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-@Entity(name = "good_style")
-public class GoodStyle implements Serializable {
+
+@Entity
+public class Style implements Serializable {
 	
 	@Id
 	@GeneratedValue
@@ -21,12 +22,14 @@ public class GoodStyle implements Serializable {
 	@Transient
 	private static final long serialVersionUID = 1L;
 	
-	protected GoodStyle() {
+	protected Style() {
 	}
 	
-	public GoodStyle(String nome) {
+	public Style(String nome) {
 		this.nome = nome;
 	}
+	
+	//Getters and Setters
 
 	public long getId() {
 		return id;

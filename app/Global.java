@@ -2,14 +2,12 @@
 
 import java.util.List;
 
-import models.repository.BadStyleRepository;
-import models.repository.GoodStyleRepository;
-import models.repository.InstrumentRepository;
 import models.constant.InstrumentType;
 import models.constant.StyleType;
-import models.entity.BadStyle;
-import models.entity.GoodStyle;
 import models.entity.Instrument;
+import models.entity.Style;
+import models.repository.InstrumentRepository;
+import models.repository.StyleRepository;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
@@ -17,38 +15,30 @@ import play.db.jpa.JPA;
 
 public class Global extends GlobalSettings {
 	
-	private List<BadStyle> badStyles;
-	private List<GoodStyle> goodStyles;
+	private List<Style> styles;
 	private List<Instrument> instruments;
-	private static BadStyleRepository badStyleRepository = BadStyleRepository.getInstance();
-	private static GoodStyleRepository goodStyleRepository = GoodStyleRepository.getInstance();
-	private static InstrumentRepository instrumentRepository = InstrumentRepository.getInstance();
+	private static StyleRepository styleRepository;
+	private static InstrumentRepository instrumentRepository;
 	
 	@Override
 	public void onStart(Application app) {
 		super.onStart(app);
+		
 		Logger.info("Application has started");
+		styleRepository = StyleRepository.getInstance();
+		instrumentRepository = InstrumentRepository.getInstance();
 		
 		JPA.withTransaction(new play.libs.F.Callback0() {
 			@Override
 			public void invoke() throws Throwable {
 				try {
-					goodStyles = goodStyleRepository.findAll();
-					if(goodStyles.size() == 0) {
+					styles = styleRepository.findAll();
+					if(styles.size() == 0) {
 						for(StyleType style : StyleType.values()) {
-							goodStyleRepository.persist(new GoodStyle(style.getDescription()));
+							styleRepository.persist(new Style(style.getDescription()));
 							
 						}
-						goodStyleRepository.flush();
-					}
-					
-					badStyles = badStyleRepository.findAll();
-					if(badStyles.size() == 0) {
-						for(StyleType style : StyleType.values()) {
-							badStyleRepository.persist(new BadStyle(style.getDescription()));
-							
-						}
-						badStyleRepository.flush();
+						styleRepository.flush();
 					}
 					
 					instruments = instrumentRepository.findAll();
@@ -69,19 +59,17 @@ public class Global extends GlobalSettings {
 	public void onStop(Application app) {	
 		super.onStop(app);
 		
+		styleRepository = StyleRepository.getInstance();
+		instrumentRepository = InstrumentRepository.getInstance();
+		
 		JPA.withTransaction(new play.libs.F.Callback0() {
 			@Override
 			public void invoke() throws Throwable {
 				Logger.info("Application shutdown");
 				try {
-					goodStyles = goodStyleRepository.findAll();
-					for(GoodStyle style : goodStyles) {
-						goodStyleRepository.removeById(style.getId());
-					}
-					
-					badStyles = badStyleRepository.findAll();
-					for(BadStyle style : badStyles) {
-						badStyleRepository.removeById(style.getId());
+					styles = styleRepository.findAll();
+					for(Style style : styles) {
+						styleRepository.removeById(style.getId());
 					}
 					
 					instruments = instrumentRepository.findAll();

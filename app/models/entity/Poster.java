@@ -1,6 +1,7 @@
 package models.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import javax.persistence.*;
 import models.exception.NewAdException;
 
 @Entity(name = "poster")
-public class Poster implements Serializable {
+public class Poster implements Serializable, Comparable<Poster> {
 	
 	@Id
 	@GeneratedValue
@@ -22,10 +23,10 @@ public class Poster implements Serializable {
 	
 	@Column(name = "description", nullable = false)
 	private String description;
-	
+		
 	@Column(name = "search_for", nullable = false)
 	private String searchFor;
-	
+		
 	@Column(name = "create_on")
 	@Temporal(value = TemporalType.DATE)
 	private Calendar createdOn;
@@ -33,6 +34,9 @@ public class Poster implements Serializable {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	
+	@Transient
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	
 	@Transient
 	private static final long serialVersionUID = 1L;
@@ -48,8 +52,7 @@ public class Poster implements Serializable {
 		createdOn = Calendar.getInstance();
 		code = title.hashCode() + user.hashCode();
 		this.searchFor = searchFor;
-		this.user = user;
-		
+		this.user = user;	
 	}
 	
 	// Getters and Setters
@@ -86,6 +89,10 @@ public class Poster implements Serializable {
 		this.description = description;
 	}
 
+	public String getResumeDesc() {
+		return description.substring(0, 40) + "...";
+	}
+
 	public Calendar getCreatedOn() {
 		return createdOn;
 	}
@@ -102,12 +109,21 @@ public class Poster implements Serializable {
 		this.searchFor = searchFor;
 	}
 	
+	public String getDateFormat() {
+		return dateFormat.format(createdOn.getTime());
+	}
+	
 	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	@Override
+	public int compareTo(Poster other) {
+		return this.createdOn.compareTo(other.getCreatedOn());
 	}
 	
 	private void checkRequiredInfo(String title, String description, 
@@ -119,8 +135,13 @@ public class Poster implements Serializable {
 						+ "motivação do anúncio são obrigatórios");
 		}
 		
-		if(description.length() < 14) {
-			throw new NewAdException("sua descrição dever ter no mínimo 15 caracteres, "
+		if(description.length() < 39) {
+			throw new NewAdException("sua descrição dever ter no mínimo 40 caracteres, "
+					+ "por favor verifique!");
+		}
+		
+		if(title.length() > 100) {
+			throw new NewAdException("o titulo do anúncio deve ter no máximo 100 caracteres "
 					+ "por favor verifique!");
 		}
 	}

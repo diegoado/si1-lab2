@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
@@ -39,10 +40,12 @@ public class User implements Serializable {
 	private List<Instrument> instruments;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<GoodStyle> goodStyles;
+	@JoinTable(name="good_style")
+	private List<Style> goodStyles;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<BadStyle> badStyles;
+	@JoinTable(name="bad_style")
+	private List<Style> badStyles;
 	
 	@Transient
 	private static final long serialVersionUID = 1L;
@@ -51,7 +54,7 @@ public class User implements Serializable {
 	}
 	
 	public User(String email, String profile, String city, String neighborhood, List<Instrument> instruments, 
-			List<BadStyle> bad, List<GoodStyle> good) throws NewAdException {
+			List<Style> bad, List<Style> good) throws NewAdException {
 		
 		checkRequiredInfo(city, neighborhood, instruments);
 		checkContactInfo(email, profile);
@@ -117,19 +120,19 @@ public class User implements Serializable {
 		this.instruments = instruments;
 	}
 
-	public List<GoodStyle> getGoodStyles() {
+	public List<Style> getGoodStyles() {
 		return goodStyles;
 	}
 
-	public void setGoodStyles(List<GoodStyle> goodStyles) {
+	public void setGoodStyles(List<Style> goodStyles) {
 		this.goodStyles = goodStyles;
 	}
 
-	public List<BadStyle> getBadStyles() {
+	public List<Style> getBadStyles() {
 		return badStyles;
 	}
 
-	public void setBadStyles(List<BadStyle> badStyles) {
+	public void setBadStyles(List<Style> badStyles) {
 		this.badStyles = badStyles;
 	}
 
@@ -206,15 +209,15 @@ public class User implements Serializable {
 		}
 	}
 	
-	private void checkStyleInfo(List<GoodStyle> good, List<BadStyle> bad) throws NewAdException {
+	private void checkStyleInfo(List<Style> good, List<Style> bad) throws NewAdException {
 		List<String> badStyles = new ArrayList<String>();
 		List<String> goodStyles = new ArrayList<String>();
 		
-		for(BadStyle style : bad) {
+		for(Style style : bad) {
 			badStyles.add(style.getNome());
 		}
 		
-		for(GoodStyle style : good) {
+		for(Style style : good) {
 			goodStyles.add(style.getNome());
 		}
 		

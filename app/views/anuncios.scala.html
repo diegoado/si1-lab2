@@ -1,4 +1,7 @@
-	<!DOCTYPE html>
+
+@(posterList: List[models.entity.Poster])
+
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -75,7 +78,6 @@
 	    </nav>
 	
 	    <div class="container">
-	
 	        <div class="row">
 	            <div class="box">
 	                <div class="col-lg-12">
@@ -83,29 +85,68 @@
 	                    <h2 class="intro-text text-center"><strong>Anúncios</strong> </h2>
 	                    <hr>
 	                </div>
-	                <div class="col-sm-4 text-center">
-	                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-	                    <h3>John Smith
-	                        <small>Job Title</small>
-	                    </h3>
-	                </div>
-	                <div class="col-sm-4 text-center">
-	                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-	                    <h3>John Smith
-	                        <small>Job Title</small>
-	                    </h3>
-	                </div>
-	                <div class="col-sm-4 text-center">
-	                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-	                    <h3>John Smith
-	                        <small>Job Title</small>
-	                    </h3>
-	                </div>
-	                <div class="clearfix"></div>
-	            </div>
-	        </div>
-	
-	    </div>
+					 <div class="section">
+            			<div class="container">
+                			<div class="row">
+                    			<div class="col-sm-offset-2 col-md-8 text-center">
+                        			<form role="form">
+                            		<div class="form-group has-feedback">
+                                		<label class="control-label">Pesquise um Anúncio Aqui</label>
+                            			<div class="input-group input-group-lg">
+                            				<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                            				<input class="form-control input-lg" name="search" type="search" placeholder="Ex: Guitarra, Rock, Campina Grande">
+               		 				        <span class="input-group-btn">
+    											<button type="submit" class="btn btn-default">Pesquisar</button>
+  											</span>
+										</div>
+                           		 	</div>
+                            		<div class="form-group">
+                                		<div class="checkbox">
+                                    		<label class="checkbox-inline">
+                                    			<input value="titulo" type="checkbox">Por palavra-chave</label>
+                                			<label class="checkbox-inline">
+                                    			<input value="cidade" type="checkbox">Por cidade</label>
+                        		  			<label class="checkbox-inline">
+                                    			<input value="data" type="checkbox">Por Data</label>
+                                    		<label class="checkbox-inline">
+                                        		<input value="instrument" type="checkbox">Por instrumento</label>
+                                    		<label class="checkbox-inline">
+                                        		<input value="estilo" type="checkbox">Por estilos preferidos</label>
+                                    		<label class="checkbox-inline">
+                                        		<input value"formar uma banda" type="checkbox">Forma uma banda</label>
+                    		           		<label class="checkbox-inline">
+                                        		<input value="tocar ocasionalmente" type="checkbox">Tocar ocasionalmente</label>
+                                		</div>
+                    				</div>
+                        			</form>
+                    			</div>
+                			</div>
+            			</div>
+        			</div>
+    			<br>
+    			<br>
+                <div class="section">
+        			<div class="container">
+            			<div class="row">
+                			<div class="col-sm-offset-1 col-md-10">
+	                        <table class="table table-hover">
+                            	<tbody>
+	                                @for(poster <- posterList) {
+	                                	<tr>
+	                                		<td>
+	                                			<a href=@routes.Application.anuncio(poster.getId())><b>@poster.getTitle()</b></a>
+	                                			<span class="pull-right"><small>@poster.getDateFormat()</small></span>
+	                                			<p>@poster.getResumeDesc()</p>
+	                                		</td>
+                                		</tr>
+                                	}
+	                            </tbody>
+	                        </table>
+	                    </div>
+        			</div>
+    			</div>
+			</div>    
+    	</div>
 	    <!-- /.container -->
 	
 	    <footer>

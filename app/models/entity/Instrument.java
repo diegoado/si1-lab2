@@ -24,6 +24,8 @@ public class Instrument implements Serializable {
 	public Instrument(String nome) {
 		this.nome = nome;
 	}
+	
+	// Getters and Setters
 
 	public long getId() {
 		return id;

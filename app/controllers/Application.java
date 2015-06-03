@@ -2,32 +2,24 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import models.entity.BadStyle;
-import models.entity.GoodStyle;
-import models.entity.Instrument;
-import models.entity.Poster;
-import models.entity.User;
-import models.exception.NewAdException;
-import models.repository.BadStyleRepository;
-import models.repository.GoodStyleRepository;
-import models.repository.InstrumentRepository;
-import models.repository.PosterRepository;
-import models.repository.UserRepository;
 import play.Logger;
-import play.data.DynamicForm;
 import play.data.Form;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.*;
+import models.entity.*;
+import models.exception.*;
+import models.repository.*;
+
 
 public class Application extends Controller {
 	
-	private static BadStyleRepository badStyles;
-	private static GoodStyleRepository goodStyles;
+	private static StyleRepository styles;
 	private static PosterRepository postRepository;
 	private static InstrumentRepository instruments;
 	
@@ -38,13 +30,11 @@ public class Application extends Controller {
 	
 	@Transactional
 	public static Result publique() {
-		badStyles = BadStyleRepository.getInstance();
-		goodStyles = GoodStyleRepository.getInstance();
+		styles = StyleRepository.getInstance();
 		instruments = InstrumentRepository.getInstance();
-		return ok(publique.render(badStyles.findAll(), goodStyles.findAll(), instruments.findAll()));
+		return ok(publique.render(styles.findAll(), instruments.findAll()));
 	}
 			
-	@SuppressWarnings("unchecked")
 	@Transactional
 	public static Result createAd() {
 		postRepository = PosterRepository.getInstance();
@@ -62,19 +52,12 @@ public class Application extends Controller {
 		String interesse = data.get("interesse");
 		
 		//Multi selected Option about advertiser
-		List<BadStyle> badStyles = getBadStyleSelectedData();
-		List<GoodStyle> goodStyles = getGoodStyleSelectedData();
+		List<Style> badStyles = getStyleSelectedData("badSty[]");
+		List<Style> goodStyles = getStyleSelectedData("goodSty[]");
 		List<Instrument> myInstruments = getInstrumentSelectedData(); 
 		
 		try {
-			Logger.debug(titulo);
-			Logger.debug(descrição);
-			
-			Logger.debug(email);
-			Logger.debug(cidade);
-			Logger.debug(bairro);
-			Logger.debug(perfil);
-			Logger.debug(interesse);
+
 			Logger.debug(Arrays.toString(badStyles.toArray()));
 			Logger.debug(Arrays.toString(goodStyles.toArray()));
 			Logger.debug(Arrays.toString(myInstruments.toArray()));
@@ -91,39 +74,19 @@ public class Application extends Controller {
 		
 		return redirect("anuncios");
 	}
-		
+			
 	@Transactional
-	private static List<BadStyle> getBadStyleSelectedData() {
-		badStyles = BadStyleRepository.getInstance();
+	private static List<Style> getStyleSelectedData(String key) {
+		styles = StyleRepository.getInstance();
 		Map<String, String[]> multipleData = request().body().asFormUrlEncoded();
 		
-		List<BadStyle> styleList = new ArrayList<>();
-		String[] requestStyleArray = multipleData.get("badSty[]");
+		List<Style> styleList = new ArrayList<Style>();
+		String[] requestStyleArray = multipleData.get(key);
 		
 		if(requestStyleArray != null) {
 			for(int i = 0; i < requestStyleArray.length; i++) {
 				long id = Long.parseLong(requestStyleArray[i]);
-				BadStyle style = badStyles.findByEntityId(id);
-				if(!styleList.contains(style)) {
-					styleList.add(style);
-				}
-			}
-		}
-		return styleList;
-	}
-	
-	@Transactional
-	private static List<GoodStyle> getGoodStyleSelectedData() {
-		goodStyles = GoodStyleRepository.getInstance();
-		Map<String, String[]> multipleData = request().body().asFormUrlEncoded();
-		
-		List<GoodStyle> styleList = new ArrayList<>();
-		String[] requestStyleArray = multipleData.get("goodSty[]");
-		
-		if(requestStyleArray != null) {
-			for(int i = 0; i < requestStyleArray.length; i++) {
-				long id = Long.parseLong(requestStyleArray[i]);
-				GoodStyle style = goodStyles.findByEntityId(id);
+				Style style = styles.findByEntityId(id);
 				if(!styleList.contains(style)) {
 					styleList.add(style);
 				}
@@ -152,8 +115,18 @@ public class Application extends Controller {
 		return instrumentList;
 	}
 	
+	@Transactional
+    public static Result anuncio(Long id) {
+        return ok(index.render());
+    }
+	
+	@Transactional
 	public static Result anuncios() {
-		return ok(anuncios.render());
+		postRepository = PosterRepository.getInstance();
+		List<Poster> posterList = postRepository.findAll();
+		
+		Collections.sort(posterList);
+		return ok(anuncios.render(posterList));
 	}
 	
 	@Transactional
