@@ -2,7 +2,7 @@ package models.entity;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -29,7 +29,7 @@ public class Poster implements Serializable, Comparable<Poster> {
 		
 	@Column(name = "create_on")
 	@Temporal(value = TemporalType.DATE)
-	private Calendar createdOn;
+	private Date createdOn;
 		
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -49,8 +49,8 @@ public class Poster implements Serializable, Comparable<Poster> {
 		
 		this.title = title;
 		this.description = description;
-		createdOn = Calendar.getInstance();
-		code = title.hashCode() + user.hashCode();
+		createdOn = new Date();
+		code = user.hashCode() / 100 + title.hashCode();
 		this.searchFor = searchFor;
 		this.user = user;	
 	}
@@ -90,14 +90,14 @@ public class Poster implements Serializable, Comparable<Poster> {
 	}
 
 	public String getResumeDesc() {
-		return description.substring(0, 40) + "...";
+		return description.substring(0, 39) + "...";
 	}
 
-	public Calendar getCreatedOn() {
+	public Date getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Calendar createdOn) {
+	public void setCreatedOn(Date createdOn) {
 		this.createdOn = createdOn;
 	}
 	
@@ -110,7 +110,7 @@ public class Poster implements Serializable, Comparable<Poster> {
 	}
 	
 	public String getDateFormat() {
-		return dateFormat.format(createdOn.getTime());
+		return dateFormat.format(createdOn);
 	}
 	
 	public User getUser() {
@@ -121,16 +121,24 @@ public class Poster implements Serializable, Comparable<Poster> {
 		this.user = user;
 	}
 	
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Anúnicio [Titulo= ").append(title).append(", criado em= ")
+				.append(getDateFormat()).append("]");
+		return builder.toString();
+	}
+
 	@Override
 	public int compareTo(Poster other) {
-		return this.createdOn.compareTo(other.getCreatedOn());
+		return this.createdOn.compareTo(other.getCreatedOn()) * (-1);
 	}
 	
 	private void checkRequiredInfo(String title, String description, 
 			String searchFor) throws NewAdException {
 		
-		if(title == null || description == null || searchFor == null ||
-				title.isEmpty() || description.isEmpty() || searchFor.isEmpty()) {
+		if(title.trim().isEmpty() || description.trim().isEmpty() || searchFor.trim().isEmpty()) {
 			throw new NewAdException("os campos de titulo, descrição e a "
 						+ "motivação do anúncio são obrigatórios");
 		}

@@ -187,25 +187,26 @@ public class User implements Serializable {
 	private void checkRequiredInfo(String city, String neighborhood, 
 			List<Instrument> instruments) throws NewAdException {
 		
-		if(city == null || neighborhood == null || city.isEmpty() || 
-				neighborhood.isEmpty() || instruments.isEmpty()) {
+		if(city.trim().isEmpty() || neighborhood.trim().isEmpty() || instruments.isEmpty()) {
 			throw new NewAdException("os campos de cidade, bairro e os "
 						+ "instrumentos que você toca são obrigatórios");
 		}
 	}
 	
 	private void checkContactInfo(String email, String profile) throws NewAdException {
-		if((email == null && profile == null) || (email.isEmpty() && profile.isEmpty())) {
+		if(email.trim().isEmpty() && profile.isEmpty()) {
 			throw new NewAdException("é necessário pelo menos uma forma de contato: "
 						+ "email ou perfil no facebook");
 		}
 		
-		Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		if(!email.trim().isEmpty()) {
+			Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 		
-		Matcher matcher = pattern.matcher(email);
-		if(!matcher.matches()) {
-			throw new NewAdException("o email formecido é inválido, por favor verifique!");
+			Matcher matcher = pattern.matcher(email);
+			if(!matcher.matches()) {
+				throw new NewAdException("o email formecido é inválido, por favor verifique!");
+			}
 		}
 	}
 	
