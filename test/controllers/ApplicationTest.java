@@ -105,6 +105,10 @@ public class ApplicationTest {
 		requestMap.put("bairro", "José Pinheiro");
 		requestMap.put("myInst[]", instrumentId);
 		
+		FakeRequest fakeRequest = new FakeRequest().withFormUrlEncodedBody(requestMap);
+		Result resultPost = callAction(controllers.routes.ref.Application.createAd(), fakeRequest);
+		assertThat(status(resultPost)).isEqualTo(SEE_OTHER);
+		
 	}
 	
 	@Test

@@ -174,7 +174,7 @@ public class Global extends GlobalSettings {
 			try {
 				User user = new User(email, profile, city, neighborhood, myInstruments, badStyle, goodStyle);
 				Poster poster = new Poster(title, description, interest, user);
-				date.add(Calendar.DAY_OF_MONTH, 1 - i);
+				date.add(Calendar.DAY_OF_MONTH, -i);
 				poster.setCreatedOn(date.getTime());
 				adverts.add(poster);
 			} catch (NewAdException e) {

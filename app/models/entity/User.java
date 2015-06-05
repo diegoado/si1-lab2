@@ -40,11 +40,11 @@ public class User implements Serializable {
 	private List<Instrument> instruments;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name="good_style")
+	@JoinTable(name="user_goodstyle")
 	private List<Style> goodStyles;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name="bad_style")
+	@JoinTable(name="user_badstyle")
 	private List<Style> badStyles;
 	
 	@Transient
@@ -135,66 +135,20 @@ public class User implements Serializable {
 	public void setBadStyles(List<Style> badStyles) {
 		this.badStyles = badStyles;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		result = prime * result
-				+ ((instruments == null) ? 0 : instruments.hashCode());
-		result = prime * result
-				+ ((neighborhood == null) ? 0 : neighborhood.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		User other = (User) obj;
-		if (city == null) {
-			if (other.city != null) {
-				return false;
-			}
-		} else if (!city.equals(other.city)) {
-			return false;
-		}
-		if (instruments == null) {
-			if (other.instruments != null) {
-				return false;
-			}
-		} else if (!instruments.equals(other.instruments)) {
-			return false;
-		}
-		if (neighborhood == null) {
-			if (other.neighborhood != null) {
-				return false;
-			}
-		} else if (!neighborhood.equals(other.neighborhood)) {
-			return false;
-		}
-		return true;
-	}
 	
 	private void checkRequiredInfo(String city, String neighborhood, 
 			List<Instrument> instruments) throws NewAdException {
 		
-		if(city.trim().isEmpty() || neighborhood.trim().isEmpty() || instruments.isEmpty()) {
+		if(city == null || neighborhood == null || city.trim().isEmpty() || 
+					neighborhood.trim().isEmpty() || instruments.isEmpty()) {
 			throw new NewAdException("os campos de cidade, bairro e os "
 						+ "instrumentos que você toca são obrigatórios");
 		}
 	}
 	
 	private void checkContactInfo(String email, String profile) throws NewAdException {
-		if(email.trim().isEmpty() && profile.isEmpty()) {
+		if((email == null && profile == null) || 
+				(email.trim().isEmpty() && profile.isEmpty())) {
 			throw new NewAdException("é necessário pelo menos uma forma de contato: "
 						+ "email ou perfil no facebook");
 		}

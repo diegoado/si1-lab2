@@ -15,9 +15,6 @@ public class Poster implements Serializable, Comparable<Poster> {
 	@GeneratedValue
 	private long id;
 	
-	@Column(name = "code", unique = true, nullable = false)
-	private long code;
-	
 	@Column(name = "title", nullable = false)
 	private String title;
 	
@@ -50,7 +47,6 @@ public class Poster implements Serializable, Comparable<Poster> {
 		this.title = title;
 		this.description = description;
 		createdOn = new Date();
-		code = user.hashCode() / 100 + title.hashCode();
 		this.searchFor = searchFor;
 		this.user = user;	
 	}
@@ -64,13 +60,9 @@ public class Poster implements Serializable, Comparable<Poster> {
 	public void setId(long id) {
 		this.id = id;
 	}
-
+	
 	public long getCode() {
-		return code;
-	}
-
-	public void setCode(long code) {
-		this.code = code;
+		return user.getId() + this.getId();
 	}
 
 	public String getTitle() {
@@ -138,7 +130,8 @@ public class Poster implements Serializable, Comparable<Poster> {
 	private void checkRequiredInfo(String title, String description, 
 			String searchFor) throws NewAdException {
 		
-		if(title.trim().isEmpty() || description.trim().isEmpty() || searchFor.trim().isEmpty()) {
+		if(title == null || description == null || searchFor == null || 
+				title.trim().isEmpty() || description.trim().isEmpty() || searchFor.trim().isEmpty()) {
 			throw new NewAdException("os campos de titulo, descrição e a "
 						+ "motivação do anúncio são obrigatórios");
 		}

@@ -6,10 +6,11 @@
 GET     /                           controllers.Application.index()
 GET 	/sobre						controllers.Application.sobre()
 GET  	/publique					controllers.Application.publique()
-GET	    /anuncios					controllers.Application.anuncios()
+GET	    /anuncios					controllers.Application.anuncios(page: Integer ?=1, pagaSize: Integer ?=15)
 GET		/anuncio/:id				controllers.Application.anuncio(id: Long)
 
 POST    /publique					controllers.Application.createAd()
+POST	/anuncios					controllers.Application.searchAd()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

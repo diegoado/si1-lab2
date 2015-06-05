@@ -17,7 +17,7 @@ import play.db.jpa.JPA;
 public abstract class GenericRepository<T> {
 	
 	// Resultados por página
-	public static final int DEFAULT_RESULTS = 50;
+	public static final int DEFAULT_RESULTS = 15;
 
 	private Class<T> entity;
 
