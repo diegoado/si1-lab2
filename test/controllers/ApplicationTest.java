@@ -32,6 +32,9 @@ import scala.Option;
 
 public class ApplicationTest {
 	
+	private final int PAGE_NUMBER = 1;
+	private final int PAGE_SIZE = 15;
+	
 	private static FakeApplication app;
 	private EntityManager entityManager;
 	
@@ -82,7 +85,7 @@ public class ApplicationTest {
 		Result resultPost = callAction(controllers.routes.ref.Application.createAd(), fakeRequest);
 		assertThat(status(resultPost)).isEqualTo(SEE_OTHER);
 		
-		Result resultGet = callAction(controllers.routes.ref.Application.anuncios(), new FakeRequest());
+		Result resultGet = callAction(controllers.routes.ref.Application.anuncios(PAGE_NUMBER, PAGE_SIZE, true), new FakeRequest());
 		assertThat(status(resultGet)).isEqualTo(OK);
 		assertThat(contentType(resultGet)).isEqualTo("text/html");
 		assertThat(contentAsString(resultGet)).contains("Anúncio Teste");
@@ -113,7 +116,7 @@ public class ApplicationTest {
 	
 	@Test
 	public void mustRenderAnuncios() {
-		Result result = callAction(controllers.routes.ref.Application.anuncios(), new FakeRequest());
+		Result result = callAction(controllers.routes.ref.Application.anuncios(PAGE_NUMBER, PAGE_SIZE, true), new FakeRequest());
 		assertThat(status(result)).isEqualTo(OK);
 	}
 	

@@ -19,6 +19,7 @@ import models.repository.*;
 public class Application extends Controller {
 	
 	private static final int FIRST_PAGE = 1;
+	private static List<Poster> adverts;
 	
 	private static StyleRepository styles;
 	private static PosterRepository postRepository;
@@ -118,27 +119,34 @@ public class Application extends Controller {
     }
 	
 	@Transactional
-	public static Result anuncios(int page, int pageSize) {
-		postRepository = PosterRepository.getInstance();
+	public static Result anuncios(int page, int pageSize, boolean check) {
+		if(check) {
+			postRepository = PosterRepository.getInstance();
+			adverts = postRepository.findAll();
+		}
 		
 		page = page >= FIRST_PAGE ? page : FIRST_PAGE;
 		pageSize = pageSize >= FIRST_PAGE ? pageSize : PosterRepository.DEFAULT_RESULTS;
-		
-		Long posterNumber = postRepository.countAll();
+				
+		long posterNumber = adverts.size();
 		if(page > (posterNumber / pageSize)) {
 			page = (int) 
 				(Math.ceil(posterNumber / Float.parseFloat(String.valueOf(pageSize))));
 		}
 		
+		Collections.sort(adverts);
 		session("actualPage", String.valueOf(page));
-		List<Poster> posterList = postRepository.findAll(page, pageSize);
 		
-		Collections.sort(posterList);
-		return ok(anuncios.render(posterList));
+		int fromIndex = (page - 1) * pageSize;
+		int toIndex = 
+			fromIndex + pageSize < adverts.size() ? fromIndex + pageSize : adverts.size();
+				
+		return ok(anuncios.render(adverts.subList(fromIndex, toIndex)));
 	}
 	
 	@Transactional
 	public static Result searchAd() {
+		postRepository = PosterRepository.getInstance();
 		Map<String, String> data = Form.form().bindFromRequest().data();
 		
 		String search = data.get("search");
@@ -155,75 +163,73 @@ public class Application extends Controller {
 			flash("erro", " Pesquisa inválida, tente novamente.");
 			return redirect("anuncios");
 		}
-				
-		postRepository = PosterRepository.getInstance();
-		List<Poster> posterList = postRepository.findAll();
 		
+		adverts = postRepository.findAll();
 		if(search != null && !search.trim().toLowerCase().isEmpty()) {
 			if(titulo != null) {
-				posterList = posterList.stream().filter(p -> 
+				adverts = adverts.stream().filter(p -> 
 				search.trim().toLowerCase().contains(p.getTitle().trim().toLowerCase())).
 				collect(Collectors.toList());
 			}
 			if(cidade != null) {
-				posterList = posterList.stream().filter(p -> 
+				adverts = adverts.stream().filter(p -> 
 				search.trim().toLowerCase().toLowerCase().contains(p.getUser().
 				getCity().trim().toLowerCase())).collect(Collectors.toList());
 			}
 			if(date != null) {
-				posterList = posterList.stream().filter(p -> 
+				adverts = adverts.stream().filter(p -> 
 				search.trim().toLowerCase().contains(p.getDateFormat())).
 				collect(Collectors.toList());
 			}
 			if(instrumento != null) {
-				List<Poster> posterListTemp = new ArrayList<>();
-				for(Poster poster : posterList) {
+				List<Poster> posterList = new ArrayList<>();
+				for(Poster poster : adverts) {
 					for(Instrument instrument : poster.getUser().getInstruments()) {
 						if(search.trim().toLowerCase().contains(
 								instrument.getNome().trim().toLowerCase())) {
 							
-							posterListTemp.add(poster);
+							posterList.add(poster);
 							break;
 						}
 					}
 				}
-				posterList.clear();
-				posterList.addAll(posterListTemp);
+				adverts.clear();
+				adverts.addAll(posterList);
 				
 			}
 			if(estilo != null) {
-				List<Poster> posterListTemp = new ArrayList<>();
-				for(Poster poster : posterList) {
+				List<Poster> posterList = new ArrayList<>();
+				for(Poster poster : adverts) {
 					for(Style style : poster.getUser().getGoodStyles()) {
 						if(search.trim().toLowerCase().contains(
 								style.getNome().trim().toLowerCase())) {
 							
-							posterListTemp.add(poster);
+							posterList.add(poster);
 							break;
 						}
 					}
 				}
-				posterList.clear();
-				posterList.addAll(posterListTemp);
+				adverts.clear();
+				adverts.addAll(posterList);
 			}
 		}
 		if(formarBanda != null && tocarOcasionalmente == null) {
-			posterList = posterList.stream().filter(p -> 
+			adverts = adverts.stream().filter(p -> 
 			formarBanda.trim().contains(p.getSearchFor().trim()))
 			.collect(Collectors.toList());
 		}
 		if(formarBanda == null && tocarOcasionalmente != null) {
-			posterList = posterList.stream().filter(p -> 
+			adverts = adverts.stream().filter(p -> 
 			tocarOcasionalmente.trim().contains(p.getSearchFor().trim()))
 			.collect(Collectors.toList());
 		}
 		
-		if(posterList.isEmpty()) {
+		if(adverts.isEmpty()) {
 			flash("notFound", "Nenhum anúncio encontrado com os parâmetros informados");
 			return redirect("anuncios");
 		}
 		
-		return ok(anuncios.render(posterList));
+		return ok(anuncios.render(adverts));
 	}
 	
 	@Transactional

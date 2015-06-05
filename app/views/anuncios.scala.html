@@ -166,10 +166,10 @@
     			</div>
     			<nav class="text-center">
   					<ul class="pagination pagination-lg">
-    					<li><a href=@routes.Application.anuncios()> << </a></li>
-    					<li><a href=@routes.Application.anuncios(Integer.parseInt(session.get("actualPage")) - 1)>Prev</a></li>
-    					<li><a href=@routes.Application.anuncios(Integer.parseInt(session.get("actualPage")) + 1)>Next</a></li>
-    					<li><a href=@routes.Application.anuncios(Integer.MAX_VALUE)> >> </a></li>
+    					<li><a href=@routes.Application.anuncios(1, 15, false)> << </a></li>
+    					<li><a href=@routes.Application.anuncios(Integer.parseInt(session.get("actualPage")) - 1, 15, false)>Prev</a></li>
+    					<li><a href=@routes.Application.anuncios(Integer.parseInt(session.get("actualPage")) + 1, 15, false)>Next</a></li>
+    					<li><a href=@routes.Application.anuncios(Integer.MAX_VALUE, 15, false)> >> </a></li>
   					</ul>
 				</nav>
 			</div>    
