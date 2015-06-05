@@ -14,19 +14,15 @@ import play.test.TestBrowser;
 import play.test.WithBrowser;
 
 public class IntegrationTest extends WithBrowser {
-
+	
 	@Test
 	public void mustLoadHomePage() {
-		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
-
-			@Override
-			public void invoke(TestBrowser browser) {
-				browser.goTo("http://localhost:3333");
-			
-				assertThat(browser.pageSource()).contains("Bem vindo");
-			}
-			
-		});
+        running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
+            public void invoke(TestBrowser browser) {
+                browser.goTo("http://localhost:3333");
+                assertThat(browser.pageSource()).contains("Bem vindo");
+            }
+        });
 	}
 
 }

@@ -63,6 +63,33 @@ public class ApplicationTest {
 		Result result = callAction(controllers.routes.ref.Application.publique(), new FakeRequest());
 		assertThat(status(result)).isEqualTo(OK);
 	}
+		
+	@Test
+	public void mustNotCreateAd() {
+		Random random = new Random();
+		List<Instrument> instrument = InstrumentRepository.getInstance().findAll();
+		
+		String instrumentId = String.valueOf(
+					instrument.get(random.nextInt(instrument.size() - 1)).getId());
+		
+		Map<String, String> requestMap = new HashMap<>();
+		requestMap.put("titulo", "Lálálá");
+		requestMap.put("descricao", "Teste básico para um POST de um anúncio!");
+		requestMap.put("email", "diegoado@gmail.com");
+		requestMap.put("city", "Campina Grande");
+		requestMap.put("bairro", "José Pinheiro");
+		requestMap.put("myInst[]", instrumentId);
+		
+		FakeRequest fakeRequest = new FakeRequest().withFormUrlEncodedBody(requestMap);
+		Result resultPost = callAction(controllers.routes.ref.Application.createAd(), fakeRequest);
+		assertThat(status(resultPost)).isEqualTo(SEE_OTHER);
+		assertThat(flash(resultPost).containsKey("erro"));
+		
+		Result resultGet = callAction(controllers.routes.ref.Application.anuncios(PAGE_NUMBER, PAGE_SIZE, true), new FakeRequest());
+		assertThat(status(resultGet)).isEqualTo(OK);
+		assertThat(contentType(resultGet)).isEqualTo("text/html");
+		assertThat(contentAsString(resultGet)).doesNotContain("Lálálá");
+	}
 	
 	@Test
 	public void mustCreateAd() {
@@ -73,7 +100,7 @@ public class ApplicationTest {
 					instrument.get(random.nextInt(instrument.size() - 1)).getId());
 		
 		Map<String, String> requestMap = new HashMap<>();
-		requestMap.put("titulo", "Anúncio Teste");
+		requestMap.put("titulo", "Blábláblá");
 		requestMap.put("descricao", "Teste básico para um POST de um anúncio!");
 		requestMap.put("email", "diegoado@gmail.com");
 		requestMap.put("city", "Campina Grande");
@@ -88,29 +115,7 @@ public class ApplicationTest {
 		Result resultGet = callAction(controllers.routes.ref.Application.anuncios(PAGE_NUMBER, PAGE_SIZE, true), new FakeRequest());
 		assertThat(status(resultGet)).isEqualTo(OK);
 		assertThat(contentType(resultGet)).isEqualTo("text/html");
-		assertThat(contentAsString(resultGet)).contains("Anúncio Teste");
-		
-	}
-	
-	@Test
-	public void mustNotCreateAd() {
-		Random random = new Random();
-		List<Instrument> instrument = InstrumentRepository.getInstance().findAll();
-		
-		String instrumentId = String.valueOf(
-					instrument.get(random.nextInt(instrument.size() - 1)).getId());
-		
-		Map<String, String> requestMap = new HashMap<>();
-		requestMap.put("titulo", "Anúncio Teste");
-		requestMap.put("descricao", "Teste básico para um POST de um anúncio!");
-		requestMap.put("email", "diegoado@gmail.com");
-		requestMap.put("city", "Campina Grande");
-		requestMap.put("bairro", "José Pinheiro");
-		requestMap.put("myInst[]", instrumentId);
-		
-		FakeRequest fakeRequest = new FakeRequest().withFormUrlEncodedBody(requestMap);
-		Result resultPost = callAction(controllers.routes.ref.Application.createAd(), fakeRequest);
-		assertThat(status(resultPost)).isEqualTo(SEE_OTHER);
+		assertThat(contentAsString(resultGet)).contains("Blábláblá");
 		
 	}
 	
