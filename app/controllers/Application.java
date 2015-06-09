@@ -115,14 +115,17 @@ public class Application extends Controller {
 	
 	@Transactional
     public static Result anuncio(Long id) {
-        return ok(index.render());
+		postRepository = PosterRepository.getInstance();
+		
+		Poster poster = postRepository.findByEntityId(id);
+        return ok(anuncio.render(poster));
     }
 	
 	@Transactional
 	public static Result anuncios(int page, int pageSize, boolean check) {
 		if(check) {
 			postRepository = PosterRepository.getInstance();
-			adverts = postRepository.findAll();
+			adverts = postRepository.findAllFinalized();
 		}
 		
 		page = page >= FIRST_PAGE ? page : FIRST_PAGE;

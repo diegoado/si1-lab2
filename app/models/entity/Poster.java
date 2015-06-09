@@ -27,8 +27,11 @@ public class Poster implements Serializable, Comparable<Poster> {
 	@Column(name = "create_on")
 	@Temporal(value = TemporalType.DATE)
 	private Date createdOn;
+
+	@Column(name = "finalized", nullable = false)
+	private boolean isFinalized;
 		
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
@@ -48,6 +51,7 @@ public class Poster implements Serializable, Comparable<Poster> {
 		this.description = description;
 		createdOn = new Date();
 		this.searchFor = searchFor;
+		isFinalized = false;
 		this.user = user;	
 	}
 	
@@ -105,6 +109,14 @@ public class Poster implements Serializable, Comparable<Poster> {
 		return dateFormat.format(createdOn);
 	}
 	
+	public boolean isFinalized() {
+		return isFinalized;
+	}
+
+	public void setFinalized(boolean isFinalized) {
+		this.isFinalized = isFinalized;
+	}
+
 	public User getUser() {
 		return user;
 	}

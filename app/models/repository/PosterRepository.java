@@ -19,7 +19,7 @@ public class PosterRepository extends GenericRepository<Poster> {
 		return instance;
 	}
 	
-	public List<Poster> findByTitle(String title) {
-		return null;
+	public List<Poster> findAllFinalized() {
+		return findByAttributeName("isFinalized", "false");
 	}
 }
