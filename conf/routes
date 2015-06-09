@@ -12,5 +12,8 @@ GET		/anuncio/:id				controllers.Application.anuncio(id: Long)
 POST    /publique					controllers.Application.createAd()
 POST	/anuncios					controllers.Application.searchAd()
 
+POST	/anuncio/:id				controllers.Application.finallyAd(id: Long)
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

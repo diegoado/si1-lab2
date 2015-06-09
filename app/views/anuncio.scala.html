@@ -85,6 +85,18 @@
                     	<hr>
                 	</div>
             	</div>
+            	@if(flash.get("incompleteInfo") != null) {
+			    	<div class="alert alert-warning alert-dismissible text-center" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						@flash.get("incompleteInfo")
+					</div>
+		    	}
+			    @if(flash.get("codeErro") != null) {
+			    	<div class="alert alert-warning alert-dismissible text-center" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						@flash.get("codeErro")
+					</div>
+		    	}
             	<div class="row">
 	  				<div class="col-md-4">
 	            		<img class="img-responsive img-border img-center" src=@routes.Assets.at("img/gt.jpg") alt="" style="width:304px;height:228px">
@@ -99,72 +111,104 @@
 					<div class="col-md-12">
 						<hr>
 		                <h3 class="intro-text text-center">
-		                    <strong>Informações sobre o anunciante</strong>
+		                    <strong>Informações sobre o anunciante</strong><br><br>
+		                    <a href="#myModal" class="btn btn-warning" role="button" data-toggle="modal">Finalizar Anuncio</a>
 		                </h3>
 		                <hr>
 	                </div>
-	                <div class="col-md-12">
+	                <div class="col-md-offset-1 col-md-10">
 	                	<div class="table-responsive">
 		                	<table class="table table-bordered">
-		                		<thead>
-        			        		<tr>
-        								<th>Cidade</th>
-							            <th>Bairo</th>
-						            	@if(!poster.getUser().getEmail().isEmpty()) {
-			                    			<th>E-mail</th>
-	                    				} 
-		                    			@if(!poster.getUser().getProfile().isEmpty()) {
-		                    				<th>Perfil Facebook</th>
-		                    			}             		
-			                			<th>Instrumentos que toco</th>
-			                			@if(!poster.getUser().getGoodStyles().isEmpty()) {
-			                				<th>Estilos que gosto</th>
-		                				}
-		                				@if(!poster.getUser().getBadStyles().isEmpty()) {
-		                					<th>Estilos que não gosto</th>
-		                				}
-		                				<th>Interessado em</th>
-	        						</tr>
-        						</thead>
-        						<tbody>
-	        						<tr>
-	        							<td>@poster.getUser().getCity()</td>
-							            <td>@poster.getUser().getNeighborhood()</td>
-						            	@if(!poster.getUser().getEmail().isEmpty()) {
-			                    			<td>@poster.getUser().getEmail()</td>
-	                    				} 
-		                    			@if(!poster.getUser().getProfile().isEmpty()) {
-		                    				<td>@poster.getUser().getProfile()</td>
-		                    			}             		
-			                			<td>
-			                				@for(instrument <- poster.getUser().getInstruments()) {
-			                					<span>@instrument.getNome()</span>
-			                					<br>
-		                					}
-			                			</td>
-			                			@if(!poster.getUser().getGoodStyles().isEmpty()) {
-			                				<td>
-			                					@for(goodStyle <- poster.getUser().getGoodStyles()) {
-			                						<span>@goodStyle.getNome()</span>
-			                						<br>
-		                						}
-			                				</td>
-		                				}
-		                				@if(!poster.getUser().getBadStyles().isEmpty()) {
-			                				<td>
-			                					@for(badStyle <- poster.getUser().getBadStyles()) {
-			                						<span>@badStyle.getNome()</span>
-			                						<br>
-		                						}
-			                				</td>
-		                				}
-		                				<td>@poster.getSearchFor()</td>
-	        						</tr>
-		                		</tbody>
+    			        		<tr>
+    								<th>Cidade</th>
+    								<td>@poster.getUser().getCity()</td>
+								</tr>
+								<tr>
+						            <th>Bairo</th>
+						            <td>@poster.getUser().getNeighborhood()</td>
+					            </tr>
+				            	@if(!poster.getUser().getEmail().isEmpty()) {
+				            		<tr>
+		                    			<th>E-mail</th>
+		                    			<td>@poster.getUser().getEmail()</td>
+	                    			</tr>
+                				} 
+                    			@if(!poster.getUser().getProfile().isEmpty()) {
+                    				<tr>
+                    					<th>Perfil Facebook</th>
+                    					<td>@poster.getUser().getProfile()</td>
+                					</tr>
+                    			}
+                    			<tr>             		
+	                				<th>Instrumentos que toco</th>
+	                				<td>
+	                					@for(instrument <- poster.getUser().getInstruments()) {
+	                						<span>@instrument.getNome()</span>
+	                						<br/>
+                						}
+            						</td>
+                				</tr>
+	                			@if(!poster.getUser().getGoodStyles().isEmpty()) {
+	                				<tr>
+	                					<th>Estilos que gosto</th>
+	                					<td>
+		                					@for(goodStyle <- poster.getUser().getGoodStyles()) {
+		                						<span>@goodStyle.getNome()</span>
+		                						<br/>
+	                						}
+                						</td>
+                					</tr>
+                				}
+                				@if(!poster.getUser().getBadStyles().isEmpty()) {
+                					<tr>
+                						<th>Estilos que não gosto</th>
+                						<td>
+	                						@for(badStyle <- poster.getUser().getBadStyles()) {
+		                						<span>@badStyle.getNome()</span>
+		                						<br/>
+	                						}
+                						</td>
+                					</tr>	
+                				}
+                				<tr>
+	                				<th>Interessado em</th>
+	                				<td>@poster.getSearchFor()</td>
+        						</tr>            		
 		                	</table>
 	                	</div>
 	                </div>
                 </div>
+ 				<!-- Modal -->
+ 				<div class="modal fade text-center" id="myModal">
+      				<div class="modal-dialog">
+        				<div class="modal-content">
+          					<div class="modal-header">
+            					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            					<h4 class="modal-title">Finalizar o anúncio @poster.getId() ?</h4>
+          					</div>
+          					<form role="form" method="post" action=@routes.Application.finallyAd(poster.getId())>
+          						<div class="modal-body">
+              						<div class="form-group">
+                						<label class="control-label">Entre com o código do anúncio</label>
+                						<input class="form-control" type="number" name="code">
+              						</div>
+             					 	<div class="form-group">
+	                					<div class="radio">
+	                  						<label class="radio-inline">
+	                    						<input type="radio" name="found" value="1">Encontrei parceiros</label>
+	                  						<label class="radio-inline">
+	                    						<input type="radio" name="found" value="0">Não encontrei parceiros</label>
+	                					</div>
+                					</div>
+              					</div>
+              					<div class="modal-footer">
+              						<button type="submit" class="btn btn-primary">Salvar mudanças</button>
+            						<a class="btn btn-default" data-dismiss="modal">Fechar</a>
+          						</div>
+          					</form>
+        				</div>
+      				</div>
+    			</div>
             </div>
         </div>
 	    <!-- /.container -->

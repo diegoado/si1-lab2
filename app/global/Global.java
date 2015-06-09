@@ -52,7 +52,7 @@ public class Global extends GlobalSettings {
 					}
 					
 					PosterRepository posterRepository = PosterRepository.getInstance();
-					List<Poster> adverts = posterRepository.findAllFinalized();
+					List<Poster> adverts = posterRepository.findAllNotFinalized();
 					if(adverts.size() == 0) {
 						for(Poster poster : createExampleAd()) {
 							posterRepository.persist(poster);
@@ -79,7 +79,7 @@ public class Global extends GlobalSettings {
 			public void invoke() throws Throwable {
 				Logger.info("Application shutdown");
 				try {
-					List<Poster> adverts = posterRepository.findAllFinalized();
+					List<Poster> adverts = posterRepository.findAllNotFinalized();
 					for(Poster poster : adverts) {
 						posterRepository.removeById(poster.getId());
 					}

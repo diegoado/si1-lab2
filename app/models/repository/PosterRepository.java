@@ -19,7 +19,11 @@ public class PosterRepository extends GenericRepository<Poster> {
 		return instance;
 	}
 	
-	public List<Poster> findAllFinalized() {
+	public List<Poster> findAllNotFinalized() {
 		return findByAttributeName("isFinalized", "false");
+	}
+	
+	public long countAllPartnerFound() {
+		return findByAttributeName("partnerFound", "true").size();
 	}
 }

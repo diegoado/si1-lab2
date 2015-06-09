@@ -30,6 +30,9 @@ public class Poster implements Serializable, Comparable<Poster> {
 
 	@Column(name = "finalized", nullable = false)
 	private boolean isFinalized;
+	
+	@Column(name = "partner_Found", nullable = false)
+	private boolean partnerFound;
 		
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -52,6 +55,7 @@ public class Poster implements Serializable, Comparable<Poster> {
 		createdOn = new Date();
 		this.searchFor = searchFor;
 		isFinalized = false;
+		partnerFound = false;
 		this.user = user;	
 	}
 	
@@ -115,6 +119,14 @@ public class Poster implements Serializable, Comparable<Poster> {
 
 	public void setFinalized(boolean isFinalized) {
 		this.isFinalized = isFinalized;
+	}
+
+	public boolean isPartnerFound() {
+		return partnerFound;
+	}
+
+	public void setPartnerFound(boolean partnerFound) {
+		this.partnerFound = partnerFound;
 	}
 
 	public User getUser() {

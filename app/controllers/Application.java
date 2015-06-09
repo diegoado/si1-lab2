@@ -125,7 +125,7 @@ public class Application extends Controller {
 	public static Result anuncios(int page, int pageSize, boolean check) {
 		if(check) {
 			postRepository = PosterRepository.getInstance();
-			adverts = postRepository.findAllFinalized();
+			adverts = postRepository.findAllNotFinalized();
 		}
 		
 		page = page >= FIRST_PAGE ? page : FIRST_PAGE;
@@ -233,6 +233,39 @@ public class Application extends Controller {
 		}
 		
 		return ok(anuncios.render(adverts));
+	}
+	
+	@Transactional
+	public static Result finallyAd(Long id) {
+		postRepository = PosterRepository.getInstance();
+		Map<String, String> data = Form.form().bindFromRequest().data();
+		
+		String code = data.get("code");
+		String found = data.get("found");
+		
+		Poster poster = postRepository.findByEntityId(id);
+		if(found == null  || code.isEmpty()) {
+			flash("incompleteInfo", "Informação sobre o código do anúncio e/ou "
+					+ "os seus resultados estão incompletas, por favor verifique!");
+			return redirect(controllers.routes.Application.anuncio(id));
+		}
+		
+		if(!String.valueOf(poster.getCode()).equals(code)) {
+			flash("codeErro", "Código de finalização do anúncio incorreto, por favor verifique!");
+			return redirect(controllers.routes.Application.anuncio(id));
+		} else if(found.equals("1")) {
+			poster.setFinalized(true);
+			poster.setPartnerFound(true);
+		} else {
+			poster.setFinalized(true);
+		}
+		
+		postRepository.merge(poster);
+		postRepository.flush();
+		
+		flash("adFinally", "Anúncio "
+				+ poster.getId() + " finalizado com sucesso!");
+		return redirect(controllers.routes.Application.anuncios(1, 15, true));
 	}
 	
 	@Transactional
