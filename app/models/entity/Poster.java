@@ -31,7 +31,7 @@ public class Poster implements Serializable, Comparable<Poster> {
 	@Column(name = "finalized", nullable = false)
 	private boolean isFinalized;
 	
-	@Column(name = "partner_Found", nullable = false)
+	@Column(name = "partner_found", nullable = false)
 	private boolean partnerFound;
 		
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
