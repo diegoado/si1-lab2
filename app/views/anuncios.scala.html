@@ -1,4 +1,4 @@
-@(posterList: List[models.entity.Poster])
+@(posterList: List[models.entity.Poster], count: Long)
 
 <!DOCTYPE html>
 <html>
@@ -118,6 +118,8 @@
                                 		</div>
                     				</div>
                         			</form>
+                        			<hr>
+                        			<p class="text-center"><small>Anúncios Resolvidos: @count</small></p>
                     			</div>
                 			</div>
             			</div>

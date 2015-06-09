@@ -144,7 +144,7 @@ public class Application extends Controller {
 		int toIndex = 
 			fromIndex + pageSize < adverts.size() ? fromIndex + pageSize : adverts.size();
 				
-		return ok(anuncios.render(adverts.subList(fromIndex, toIndex)));
+		return ok(anuncios.render(adverts.subList(fromIndex, toIndex), postRepository.countAllPartnerFound()));
 	}
 	
 	@Transactional
@@ -232,7 +232,7 @@ public class Application extends Controller {
 			return redirect("anuncios");
 		}
 		
-		return ok(anuncios.render(adverts));
+		return ok(anuncios.render(adverts, postRepository.countAllPartnerFound()));
 	}
 	
 	@Transactional
@@ -242,6 +242,7 @@ public class Application extends Controller {
 		
 		String code = data.get("code");
 		String found = data.get("found");
+		
 		
 		Poster poster = postRepository.findByEntityId(id);
 		if(found == null  || code.isEmpty()) {

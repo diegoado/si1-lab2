@@ -99,8 +99,14 @@
 		    	}
             	<div class="row">
 	  				<div class="col-md-4">
-	            		<img class="img-responsive img-border img-center" src=@routes.Assets.at("img/gt.jpg") alt="" style="width:304px;height:228px">
-	            		<hr class="visible-xs">
+	            		<div class="img-responsive img-border img-center">
+		            		<iframe
+							  	width="348"
+							  	height="260"
+							  	frameborder="0" style="border:0"
+							  	src="https://www.google.com/maps/embed/v1/search?key=AIzaSyBeBdfqQcuZmLdRIKNpS0mr-XDA6SRsHcs&q=@poster.getUser().getNeighborhood().replaceAll(" ", "+") + "+" + @poster.getUser().getCity().replaceAll(" ", "+") + "+in+Seattle">
+							</iframe>
+            			</div>
 	        		</div>
 	                <div class="col-md-8">
 	        			<p>@poster.getDescription()</p>
