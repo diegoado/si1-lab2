@@ -51,14 +51,29 @@ public class Global extends GlobalSettings {
 						instrumentRepository.flush();
 					}
 					
+					List<Poster> adverts;
 					PosterRepository posterRepository = PosterRepository.getInstance();
-					List<Poster> adverts = posterRepository.findAllNotFinalized();
+					adverts = posterRepository.findAllNotFinalized();
 					if(adverts.size() == 0) {
 						for(Poster poster : createExampleAd()) {
 							posterRepository.persist(poster);
 						}
 						posterRepository.flush();
 					}
+					
+					int count = 0;
+					Random random = new Random();
+					adverts = posterRepository.findAllNotFinalized();
+					while(count < 15) {
+						Poster poster = adverts.get(random.nextInt(adverts.size() - 1));
+						if(!poster.isFinalized()) {
+							count++;
+							poster.setFinalized(true);
+							poster.setPartnerFound(true);
+							posterRepository.merge(poster);
+						}
+					}
+					posterRepository.flush();
 				} catch (Exception e) {
 					Logger.debug(e.getMessage());
 				}
@@ -79,7 +94,7 @@ public class Global extends GlobalSettings {
 			public void invoke() throws Throwable {
 				Logger.info("Application shutdown");
 				try {
-					List<Poster> adverts = posterRepository.findAllNotFinalized();
+					List<Poster> adverts = posterRepository.findAll();
 					for(Poster poster : adverts) {
 						posterRepository.removeById(poster.getId());
 					}
@@ -116,7 +131,7 @@ public class Global extends GlobalSettings {
 		List<Style> styles = StyleRepository.getInstance().findAll();
 		List<Instrument> instruments = InstrumentRepository.getInstance().findAll();
 				
-		for(int i=1; i <= 25; i++) {
+		for(int i=1; i <= 40; i++) {
 			int index = 0;
 			int randomLevel = 0;
 			double release = Math.random();
